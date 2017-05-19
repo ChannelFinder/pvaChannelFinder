@@ -16,6 +16,7 @@ before_script:
   - sudo /etc/init.d/elasticsearch start
   - sleep 25
   - curl -XGET 'http://localhost:9200/_cluster/health?pretty'
+  - find . -name mapping_definitions.sh
   - chmod a+x pvaChannelFinder/src/main/resources/mapping_definitions.sh
   
 script:
