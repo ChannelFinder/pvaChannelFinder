@@ -218,7 +218,6 @@ public class ChannelFinderIT {
         }
     }
 
-    @Test
     public void queryByTag4() {
         NTURIBuilder uriBuilder = NTURI.createBuilder();
         uriBuilder.addQueryString("_tag");
