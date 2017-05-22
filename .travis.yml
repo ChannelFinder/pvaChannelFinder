@@ -3,10 +3,9 @@ sudo: required
 
 jdk:
   - oraclejdk8
-
 env:
   - EPICS_PVAS_INTF_ADDR_LIST=127.0.0.1 EPICS_PVA_ADDR_LIST=127.0.0.1 EPICS_PVA_AUTO_ADDR_LIST=false
-  
+
 before_install:
   - curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.7.3.deb && sudo dpkg -i --force-confnew elasticsearch-1.7.3.deb
 
@@ -20,9 +19,8 @@ before_script:
   - 'echo "script.inline: on" | sudo tee -a /etc/elasticsearch/indexed.yml'
   - sudo /etc/init.d/elasticsearch start
   - sleep 25
+  - /sbin/ifconfig
   - curl -XGET 'http://localhost:9200/_cluster/health?pretty'
-  - pwd
-  - find . -name mapping_definitions.sh
   - chmod a+x src/main/resources/mapping_definitions.sh
   
 script:
