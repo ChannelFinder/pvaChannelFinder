@@ -38,7 +38,7 @@ public class ChannelFinderIT {
             new HashSet<>(Arrays.asList(new XmlTag("IT_Tagb", "owner"), new XmlTag("IT_Tagc", "owner"))));
     private static final XmlChannel ch4 = new XmlChannel("distinctName", "channel",
             new HashSet<>(Arrays.asList(new XmlProperty("IT_prop", "owner", "*"))), 
-            new HashSet<>(Arrays.asList(new XmlTag("IT_Tag*", "owner"))));
+            new HashSet<>(Arrays.asList(new XmlTag("IT_Tag_extra", "owner"))));
     private static final List<XmlChannel> testChannels = Arrays.asList(ch1, ch2, ch3, ch4);
 
     /**
@@ -58,8 +58,8 @@ public class ChannelFinderIT {
                     .source(jsonBuilder().startObject().field("name", "IT_Tagb").field("owner", "owner").endObject()));
             bulkRequest.add(new IndexRequest("tags", "tag", "IT_Tagc")
                     .source(jsonBuilder().startObject().field("name", "IT_Tagc").field("owner", "owner").endObject()));
-            bulkRequest.add(new IndexRequest("tags", "tag", "IT_Tag*")
-                    .source(jsonBuilder().startObject().field("name", "IT_Tag*").field("owner", "owner").endObject()));
+            bulkRequest.add(new IndexRequest("tags", "tag", "IT_Tag_extra")
+                    .source(jsonBuilder().startObject().field("name", "IT_Tag_extra").field("owner", "owner").endObject()));
 
             bulkRequest.add(new IndexRequest("properties", "property", "IT_prop")
                     .source(jsonBuilder().startObject().field("name", "IT_prop").field("owner", "owner").endObject()));
@@ -171,6 +171,17 @@ public class ChannelFinderIT {
                     channels.size() == 2);
             assertTrue("Failed to find channel " + ch1.getName(), channels.contains(ch1));
             assertTrue("Failed to find channel " + ch2.getName(), channels.contains(ch2));
+            
+            uri.getQuery().getStringField("_tag").put("IT_Tag?");
+            channels = XmlUtil.parse(client.request(uri.getPVStructure(), 3.0));
+            assertTrue("Failed to find channels based on tag names containing wildcard char, expected: 3 found: " + channels.size(),
+                    channels.size() == 3);
+
+            uri.getQuery().getStringField("_tag").put("IT_Tag*");
+            channels = XmlUtil.parse(client.request(uri.getPVStructure(), 3.0));
+            assertTrue("Failed to find channels based on tag names containing wildcard char, expected: 4 found: " + channels.size(),
+                    channels.size() == 4);
+            
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -218,27 +229,6 @@ public class ChannelFinderIT {
         }
     }
 
-    public void queryByTag4() {
-        NTURIBuilder uriBuilder = NTURI.createBuilder();
-        uriBuilder.addQueryString("_tag");
-        NTURI uri = uriBuilder.create();
-        uri.getPVStructure().getStringField("scheme").put("pva");
-        uri.getPVStructure().getStringField("path").put("channels");
-
-        try {
-            uri.getQuery().getStringField("_tag").put("IT_Tag*");
-            PVStructure result = client.request(uri.getPVStructure(), 3.0);
-            List<XmlChannel> channels = XmlUtil.parse(result);
-            assertTrue("Failed to find channels based on tag name, expected: 1 found: " + channels.size(),
-                    channels.size() == 1);
-            assertTrue("Failed to find channel " + ch4.getName(), channels.contains(ch4));
-
-            uri.getQuery().getStringField("_tag").put("IT_Tag\\*");
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-    }
-
     @Test
     public void queryByProperty1() {
         NTURIBuilder uriBuilder = NTURI.createBuilder();
@@ -266,9 +256,9 @@ public class ChannelFinderIT {
         NTURI uri = uriBuilder.create();
         uri.getPVStructure().getStringField("scheme").put("pva");
         uri.getPVStructure().getStringField("path").put("channels");
-        uri.getQuery().getStringField("IT_prop").put("1|2");
 
         try {
+            uri.getQuery().getStringField("IT_prop").put("1|2");
             PVStructure result = client.request(uri.getPVStructure(), 3.0);
             List<XmlChannel> channels = XmlUtil.parse(result);
             assertTrue("Failed to find channels based on tag name, expected: 3 found: " + channels.size(),
@@ -276,6 +266,11 @@ public class ChannelFinderIT {
             assertTrue("Failed to find channel " + ch1.getName(), channels.contains(ch1));
             assertTrue("Failed to find channel " + ch2.getName(), channels.contains(ch2));
             assertTrue("Failed to find channel " + ch3.getName(), channels.contains(ch3));
+
+            uri.getQuery().getStringField("IT_prop").put("*");
+            channels = XmlUtil.parse(client.request(uri.getPVStructure(), 3.0));
+            assertTrue("Failed to find channels based on property values containing wildcard chars, expected: 4 found: "
+                    + channels.size(), channels.size() == 4);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -310,7 +305,7 @@ public class ChannelFinderIT {
         client.delete(new DeleteRequest("tags", "tag", "IT_Taga")).actionGet();
         client.delete(new DeleteRequest("tags", "tag", "IT_Tagb")).actionGet();
         client.delete(new DeleteRequest("tags", "tag", "IT_Tagc")).actionGet();
-        client.delete(new DeleteRequest("tags", "tag", "IT_Tag*")).actionGet();
+        client.delete(new DeleteRequest("tags", "tag", "IT_Tag_extra")).actionGet();
 
         client.delete(new DeleteRequest("properties", "property", "IT_prop")).actionGet();
         client.delete(new DeleteRequest("properties", "property", "IT_prop2")).actionGet();
