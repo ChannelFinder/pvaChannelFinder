@@ -2,6 +2,7 @@ package org.epics.channelfinder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -128,11 +129,11 @@ public class XmlProperty {
      * @return string representation for log
      */
     public static String toLog(XmlProperty data) {
-         if (data.channels == null) {
-            return data.getName() + "(" + data.getOwner() + ")";
+         if (data.channels == null || data.channels.isEmpty()) {
+            return data.getName() + "(" + data.getOwner() + ")" + ":" + data.getValue();
         } else {
-            return data.getName() + "(" + data.getOwner() + ")"
-                    + (data.channels);
+            return data.getName() + "(" + data.getOwner() + ")" + ":" + data.getValue() + 
+        (data.channels.stream().map(XmlChannel::toLog).collect(Collectors.joining(",")));
         }
     }
 

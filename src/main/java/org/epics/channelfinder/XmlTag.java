@@ -2,6 +2,7 @@ package org.epics.channelfinder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -106,10 +107,11 @@ public class XmlTag {
      * @return string representation for log
      */
     public static String toLog(XmlTag data) {
-        if (data.channels == null) {
+        if (data.channels == null || data.channels.isEmpty()) {
             return data.getName() + "(" + data.getOwner() + ")";
         } else {
-            return data.getName() + "(" + data.getOwner() + ")" + (data.channels);
+            return data.getName() + "(" + data.getOwner() + ")"
+                    + (data.channels.stream().map(XmlChannel::toLog).collect(Collectors.joining(",")));
         }
     }
 
