@@ -26,7 +26,7 @@ public class XmlUtil {
      * @return list of channels
      * @throws Exception
      */
-    public static List<XmlChannel> parse(PVStructure result) throws Exception {
+    public static synchronized List<XmlChannel> parse(PVStructure result) throws Exception {
         if (NTTable.isCompatible(result)) {
             NTTable table = NTTable.wrap(result);
             List<String> names = Arrays.asList(table.getColumnNames());
