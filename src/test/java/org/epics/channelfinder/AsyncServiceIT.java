@@ -28,6 +28,7 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.transport.TransportClient;
+import org.epics.channelfinder.example.PopulateExampleDb;
 import org.epics.nt.NTURI;
 import org.epics.nt.NTURIBuilder;
 import org.epics.pvaccess.client.rpc.RPCClientImpl;

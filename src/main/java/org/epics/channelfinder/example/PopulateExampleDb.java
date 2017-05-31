@@ -1,4 +1,4 @@
-package org.epics.channelfinder;
+package org.epics.channelfinder.example;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,10 +21,20 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.transport.TransportClient;
+import org.epics.channelfinder.ElasticSearchClientManager;
+import org.epics.channelfinder.XmlChannel;
+import org.epics.channelfinder.XmlProperty;
+import org.epics.channelfinder.XmlTag;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * An class for creating the example database.
+ *
+ * @author Kunal Shroff
+ *
+ */
 public class PopulateExampleDb {
 
     private static Logger log = Logger.getLogger(PopulateExampleDb.class.getCanonicalName());
@@ -119,7 +129,7 @@ public class PopulateExampleDb {
         long start = System.currentTimeMillis();
         Collection<Boolean> finalResult = new ArrayList<>();
         start = System.currentTimeMillis();
-        for (int i = 1; i < numberOfCells; i++) {
+        for (int i = 1; i <= numberOfCells; i++) {
             String cell = String.format("%03d", i);
             try {
                 finalResult.add(insertSRCell(cell));
@@ -127,7 +137,7 @@ public class PopulateExampleDb {
                 e.printStackTrace();
             }
         }
-        for (int i = 1; i < numberOfCells; i++) {
+        for (int i = 1; i <= numberOfCells; i++) {
             String cell = String.format("%03d", i);
             try {
                 finalResult.add(insertBOCell(cell));
@@ -166,7 +176,7 @@ public class PopulateExampleDb {
                 log.info("completed populating");
             }
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.log(Level.WARNING, e.getMessage(), e);
         } finally {
             
         }
