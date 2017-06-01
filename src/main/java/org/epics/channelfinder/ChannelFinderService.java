@@ -55,7 +55,6 @@ public class ChannelFinderService {
             .addMixIn(XmlProperty.class, OnlyXmlProperty.class).addMixIn(XmlTag.class, OnlyXmlTag.class);
 
     private static class ChannelFinderServiceImpl implements RPCServiceAsync {
-        private static Logger log = Logger.getLogger(ChannelFinderServiceImpl.class.getCanonicalName());
 
         private static final ChannelFinderServiceImpl instance = new ChannelFinderServiceImpl();
 
@@ -231,7 +230,9 @@ public class ChannelFinderService {
         }
 
         public void shutdown() {
-            ElasticSearchClientManager.getClient().close();
+            log.info("shutting down service.");
+            ElasticSearchClientManager.close();
+            log.info("shut down elastic client.");
             pool.shutdown();
             // Disable new tasks from being submitted
             try {
@@ -248,7 +249,7 @@ public class ChannelFinderService {
                 // Preserve interrupt status
                 Thread.currentThread().interrupt();
             }
-            log.info("stop");
+            log.info("completed shut down.");
         }
     }
 
@@ -268,18 +269,20 @@ public class ChannelFinderService {
 
         // Cleanup connections and resources
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.info("Shutting down service " + SERVICE_NAME);
             try {
                 ChannelFinderServiceImpl.getInstance().shutdown();
                 server.destroy();
+                log.info(SERVICE_NAME + " Shutdown complete.");
             } catch (PVAException e) {
                 log.log(Level.SEVERE, "Failed to close service : " + SERVICE_NAME, e);
             }
         }));
 
-        System.out.println(SERVICE_NAME + " initializing...");
+        log.info(SERVICE_NAME + " initializing...");
         server.registerService(SERVICE_NAME, ChannelFinderServiceImpl.getInstance());
         server.printInfo();
-        System.out.println(SERVICE_NAME + " is operational.");
+        log.info(SERVICE_NAME + " is operational.");
 
         server.run(0);
 

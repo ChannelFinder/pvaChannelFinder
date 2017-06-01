@@ -20,10 +20,9 @@ public class ElasticSearchClientManager {
 
     private static Logger log = Logger.getLogger(ElasticSearchClientManager.class.getCanonicalName());
 
-    private static final ElasticSearchClientManager client = new ElasticSearchClientManager();
-    private TransportClient searchClient;
+    private static TransportClient searchClient;
 
-    private ElasticSearchClientManager() {
+    static {
         log.info("Initializing a new Transport clients.");
         try {
             searchClient = new TransportClient();
@@ -37,10 +36,10 @@ public class ElasticSearchClientManager {
     }
 
     public static TransportClient getClient() {
-        return client.searchClient;
+        return searchClient;
     }
 
-    public void close() {
+    public static void close() {
         log.info("Close the default Transport clients.");
         if (searchClient != null) {
             try {

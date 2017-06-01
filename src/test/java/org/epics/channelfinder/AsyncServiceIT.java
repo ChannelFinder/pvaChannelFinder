@@ -5,29 +5,15 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
-import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.action.bulk.BulkRequestBuilder;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.client.transport.TransportClient;
 import org.epics.channelfinder.example.PopulateExampleDb;
 import org.epics.nt.NTURI;
 import org.epics.nt.NTURIBuilder;
@@ -37,9 +23,6 @@ import org.epics.pvdata.pv.PVStructure;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
@@ -123,7 +106,7 @@ public class AsyncServiceIT {
             }
         }
         log.info("Successfully complete: " + counter + " Failed: " + failCounter);
-        log.info("ChannelFinderServiceAsync "+ queryCount +" query time: " + (System.currentTimeMillis() - start));
+        log.info("ChannelFinderService "+ queryCount +" query time: " + (System.currentTimeMillis() - start));
         assertTrue("Failed to complete all Async queries reliably", failCounter<=0);
     }
     
