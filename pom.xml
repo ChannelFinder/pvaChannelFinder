@@ -47,57 +47,73 @@
   </dependencies>
 
   <build>
-  <plugins>
-  <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <version>3.6.1</version>
-    <configuration>
-      <source>1.8</source>
-      <target>1.8</target>
-    </configuration>
-  </plugin>
-  <plugin>
-    <artifactId>maven-assembly-plugin</artifactId>
-    <version>3.0.0</version>
-    <configuration>
-      <descriptorRefs>
-        <descriptorRef>jar-with-dependencies</descriptorRef>
-      </descriptorRefs>
-    </configuration>
-    <executions>
-      <execution>
-        <phase>package</phase>
-        <goals>
-          <goal>single</goal>
-        </goals>
-      </execution>
-    </executions>
-  </plugin>
-  <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-failsafe-plugin</artifactId>
-    <version>2.18</version>
-    <configuration>
-      <encoding>UTF-8</encoding>
-      <skipITs>${skipITests}</skipITs>
-    </configuration>
-    <executions>
-      <execution>
-        <goals>
-          <goal>integration-test</goal>
-          <goal>verify</goal>
-        </goals>
-      </execution>
-    </executions>
-  </plugin>
-  <plugin>
-    <groupId>com.bazaarvoice.maven.plugins</groupId>
-      <artifactId>process-exec-maven-plugin</artifactId>
-      <version>0.7</version>
-      <executions>
-        <execution>
-          <phase>pre-integration-test</phase>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.6.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <archive>
+            <manifest>
+              <mainClass>${project.groupId}.channelfinder.ChannelFinderService</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>${project.groupId}.channelfinder.ChannelFinderService</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.18</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <skipITs>${skipITests}</skipITs>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.bazaarvoice.maven.plugins</groupId>
+        <artifactId>process-exec-maven-plugin</artifactId>
+        <version>0.7</version>
+        <executions>
+          <execution>
+            <phase>pre-integration-test</phase>
             <goals>
               <goal>start</goal>
             </goals>
@@ -106,9 +122,8 @@
               <waitForInterrupt>false</waitForInterrupt>
               <arguments>
                 <argument>java</argument>
-                <argument>-cp</argument>
+                <argument>-jar</argument>
                 <argument>${project.artifactId}-${project.version}-jar-with-dependencies.jar</argument>
-                <argument>${project.groupId}.channelfinder.ChannelFinderService</argument>
               </arguments>
             </configuration>
           </execution>
