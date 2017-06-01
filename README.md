@@ -34,4 +34,8 @@ epics:nt/NTURI:1.0
 Installation
 ------------
 
-```mvn clean install```
+``` mvn clean install ```
+
+Running the Service
+
+``` java -jar target/epics-channelfinder-<version>-jar-with-dependencies.jar ```
