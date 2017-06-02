@@ -36,6 +36,6 @@ Installation
 
 ``` mvn clean install ```
 
-Running the Service
+#### Running the Service
 
 ``` java -jar target/epics-channelfinder-<version>-jar-with-dependencies.jar ```
