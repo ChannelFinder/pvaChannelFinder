@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -97,6 +98,7 @@ public class ChannelFinderService {
                     BoolQueryBuilder qb = boolQuery();
                     int size = 10000;
                     int from = 0;
+                    Optional<String> sortField = Optional.empty();
                     for (String parameter : query) {
                         String value = uri.getQueryField(PVString.class, parameter).get();
                         if (value != null && !value.isEmpty()) {
@@ -120,6 +122,7 @@ public class ChannelFinderService {
                             case "_size":
                                 try {
                                     size = Integer.valueOf(value.trim());
+                                    sortField = Optional.of("name");
                                 } catch (NumberFormatException e) {
                                     log.warning("failed to parse the size: " + value);
                                 }
@@ -127,6 +130,7 @@ public class ChannelFinderService {
                             case "_from":
                                 try {
                                     from = Integer.valueOf(value.trim());
+                                    sortField = Optional.of("name");
                                 } catch (NumberFormatException e) {
                                     log.warning("failed to parse the from: " + value);
                                 }
@@ -147,9 +151,12 @@ public class ChannelFinderService {
 
                     SearchRequestBuilder builder = client.prepareSearch("channelfinder").setQuery(qb).setSize(size);
                     if (from >= 0) {
-                        builder.addSort(SortBuilders.fieldSort("name"));
                         builder.setFrom(from);
                     }
+
+                    sortField.ifPresent((s) -> {
+                        builder.addSort(SortBuilders.fieldSort(s));
+                    });
                     final SearchResponse qbResult = builder.execute().actionGet();
 
                     final int resultSize = qbResult.getHits().hits().length;

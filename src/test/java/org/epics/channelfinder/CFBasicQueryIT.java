@@ -24,9 +24,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ChannelFinderIT {
+public class CFBasicQueryIT {
 
-    private static final Logger log = Logger.getLogger(ChannelFinderIT.class.getCanonicalName());
+    private static final Logger log = Logger.getLogger(CFBasicQueryIT.class.getCanonicalName());
     private static final XmlChannel ch1 = new XmlChannel("pvk:01<first>", "channel",
             new HashSet<>(Arrays.asList(new XmlProperty("IT_prop", "owner", "1"), new XmlProperty("IT_prop2", "owner", "2"))),
             new HashSet<>(Arrays.asList(new XmlTag("IT_Taga"))));
@@ -85,7 +85,7 @@ public class ChannelFinderIT {
 
     }
 
-    private RPCClientImpl client = new RPCClientImpl("ChannelFinderService");
+    private RPCClientImpl client = new RPCClientImpl(ChannelFinderService.SERVICE_NAME);
 
     @Test
     public void queryByName1() {
