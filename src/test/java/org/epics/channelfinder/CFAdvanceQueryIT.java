@@ -55,7 +55,6 @@ public class CFAdvanceQueryIT {
             // When the _filter is used with ALL then you only get channelNames 
             uri.getQuery().getStringField("_filter").put("ALL");
             PVStructure result = client.request(uri.getPVStructure(), 3.0);
-            System.out.println(result);
             resultChannels = XmlUtil.parse(result);
             assertTrue("Failed to filter the result to only return the channel Names ", resultChannels.stream().allMatch((ch) -> {
                 return ch.getProperties().isEmpty() && ch.getTags().isEmpty();
