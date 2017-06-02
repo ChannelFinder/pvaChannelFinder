@@ -7,11 +7,15 @@ import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
 import static org.elasticsearch.index.query.QueryBuilders.wildcardQuery;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -89,16 +93,20 @@ public class ChannelFinderService {
 
             @Override
             public void run() {
+
                 NTURI uri = NTURI.wrap(args);
                 log.info(Thread.currentThread().getName().toString());
 
                 String[] query = uri.getQueryNames();
                 TransportClient client = ElasticSearchClientManager.getClient();
+
                 try {
                     BoolQueryBuilder qb = boolQuery();
                     int size = 10000;
                     int from = 0;
                     Optional<String> sortField = Optional.empty();
+                    final Set<String> filteredColumns = new HashSet<>();
+                    
                     for (String parameter : query) {
                         String value = uri.getQueryField(PVString.class, parameter).get();
                         if (value != null && !value.isEmpty()) {
@@ -131,6 +139,13 @@ public class ChannelFinderService {
                                 try {
                                     from = Integer.valueOf(value.trim());
                                     sortField = Optional.of("name");
+                                } catch (NumberFormatException e) {
+                                    log.warning("failed to parse the from: " + value);
+                                }
+                                break;
+                            case "_filter":
+                                try {
+                                    filteredColumns.addAll(Arrays.asList(value.trim().split(",")));
                                 } catch (NumberFormatException e) {
                                     log.warning("failed to parse the from: " + value);
                                 }
@@ -170,8 +185,6 @@ public class ChannelFinderService {
                     channelTable.put("owner", Arrays.asList(new String[resultSize]));
 
                     qbResult.getHits().forEach(hit -> {
-                        hit.getFields().entrySet().forEach(System.out::println);
-
                         try {
                             XmlChannel ch = channelMapper.readValue(hit.source(), XmlChannel.class);
 
@@ -180,19 +193,25 @@ public class ChannelFinderService {
                             channelTable.get("channelName").set(index, ch.getName());
                             channelTable.get("owner").set(index, ch.getOwner());
 
-                            ch.getTags().stream().forEach(t -> {
-                                if (!channelTagTable.containsKey(t.getName())) {
-                                    channelTagTable.put(t.getName(), new boolean[resultSize]);
-                                }
-                                channelTagTable.get(t.getName())[index] = true;
-                            });
+                            if (!filteredColumns.contains("ALL")) {
+                                ch.getTags().stream().filter((tag) -> {
+                                    return filteredColumns.isEmpty() || filteredColumns.contains(tag.getName());
+                                }).forEach(t -> {
+                                    if (!channelTagTable.containsKey(t.getName())) {
+                                        channelTagTable.put(t.getName(), new boolean[resultSize]);
+                                    }
+                                    channelTagTable.get(t.getName())[index] = true;
+                                });
 
-                            ch.getProperties().stream().forEach(prop -> {
-                                if (!channelPropertyTable.containsKey(prop.getName())) {
-                                    channelPropertyTable.put(prop.getName(), Arrays.asList(new String[resultSize]));
-                                }
-                                channelPropertyTable.get(prop.getName()).set(index, prop.getValue());
-                            });
+                                ch.getProperties().stream().filter((prop) -> {
+                                    return filteredColumns.isEmpty() || filteredColumns.contains(prop.getName());
+                                }).forEach(prop -> {
+                                    if (!channelPropertyTable.containsKey(prop.getName())) {
+                                        channelPropertyTable.put(prop.getName(), Arrays.asList(new String[resultSize]));
+                                    }
+                                    channelPropertyTable.get(prop.getName()).set(index, prop.getValue());
+                                });
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -233,7 +252,6 @@ public class ChannelFinderService {
                 } finally {
                 }
             }
-
         }
 
         public void shutdown() {

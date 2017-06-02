@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.epics.channelfinder.example.PopulateExampleDb;
 import org.epics.nt.NTURI;
@@ -33,11 +34,55 @@ public class CFAdvanceQueryIT {
     public static void createDB() {
         PopulateExampleDb.createDB(1);
         client = new RPCClientImpl(ChannelFinderService.SERVICE_NAME);
-        ;
     }
 
     @Test
     public void filterTest() {
+
+        List<XmlChannel> resultChannels;
+
+        NTURIBuilder uriBuilder = NTURI.createBuilder()
+                .addQueryString("_name")
+                .addQueryString("_size")
+                .addQueryString("_filter");
+        NTURI uri = uriBuilder.create();
+        uri.getPVStructure().getStringField("scheme").put("pva");
+        uri.getPVStructure().getStringField("path").put("channels");
+        uri.getQuery().getStringField("_name").put("*");
+        uri.getQuery().getStringField("_size").put("10");
+
+        try {
+            // When the _filter is used with ALL then you only get channelNames 
+            uri.getQuery().getStringField("_filter").put("ALL");
+            PVStructure result = client.request(uri.getPVStructure(), 3.0);
+            System.out.println(result);
+            resultChannels = XmlUtil.parse(result);
+            assertTrue("Failed to filter the result to only return the channel Names ", resultChannels.stream().allMatch((ch) -> {
+                return ch.getProperties().isEmpty() && ch.getTags().isEmpty();
+            }));
+            // Check channels only consist of names
+            
+            Set<String> filterNames = new HashSet<>();
+            filterNames.add("type");
+            filterNames.add("cell");
+            filterNames.add("family");
+
+            uri.getQuery().getStringField("_filter").put(filterNames.stream().collect(Collectors.joining(",")));
+            result = client.request(uri.getPVStructure(), 3.0);
+            resultChannels = XmlUtil.parse(result);
+
+            assertTrue("Failed to filter the result to only return the channel names and a selecte few properties" + 
+            "expected only the properties type, cell, and family recieved " + result,
+                    resultChannels.stream().allMatch((ch) -> {
+                return filterNames
+                        .equals(ch.getProperties().stream().map(XmlProperty::getName).collect(Collectors.toSet()))
+                        && 
+                        ch.getTags().isEmpty();
+            }));
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
