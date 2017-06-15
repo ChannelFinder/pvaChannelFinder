@@ -111,6 +111,7 @@ public class PopulateExampleDb {
             prop_list.add(new XmlProperty("prop" + String.format("%03d", i), powner));
         }
 
+        index = 0;
         Arrays.asList(112, 1, 2, 5, 10, 20, 50, 100, 200, 500).stream().forEachOrdered(count -> {
             for (int i = 0; i < count; i++) {
                 tokens_1000.add(val_bucket.get(index));
