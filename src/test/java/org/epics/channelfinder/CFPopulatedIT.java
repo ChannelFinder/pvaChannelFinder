@@ -15,9 +15,10 @@ import org.junit.runners.Suite;
  */
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ 
+@Suite.SuiteClasses({  
                      CFAdvanceQueryIT.class,
-                     AsyncServiceIT.class })
+                     AsyncServiceIT.class
+                       })
 public class CFPopulatedIT {
 
 
@@ -28,6 +29,12 @@ public class CFPopulatedIT {
     @BeforeClass
     public static void setup() {
         PopulateExampleDb.createDB(2);
+        try {
+            Thread.sleep(60000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 
