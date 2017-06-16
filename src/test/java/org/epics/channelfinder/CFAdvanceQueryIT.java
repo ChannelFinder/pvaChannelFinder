@@ -26,13 +26,8 @@ public class CFAdvanceQueryIT {
 
     private static RPCClientImpl client;
 
-    /**
-     * Create a single cell version of the test database 1500 channels with 40
-     * tags and 60 properties
-     */
     @BeforeClass
     public static void createDB() {
-        PopulateExampleDb.createDB(1);
         client = new RPCClientImpl(ChannelFinderService.SERVICE_NAME);
     }
 
@@ -141,17 +136,11 @@ public class CFAdvanceQueryIT {
 
             uri.getQuery().getStringField("_from").put("5");
             results.addAll(XmlUtil.parse(client.request(uri.getPVStructure(), 3.0)));
-            results.forEach((c) -> {
-                System.out.println(c.getName());
-            });
             assertTrue("Pagination Test: _size & _from when used should result in a ordered set of channels"
                     + results.size(), results.size() == 15);
 
             uri.getQuery().getStringField("_from").put("10");
             results.addAll(XmlUtil.parse(client.request(uri.getPVStructure(), 3.0)));
-            results.forEach((c) -> {
-                System.out.println(c.getName());
-            });
             assertTrue("Pagination Test: _size & _from when used should result in a ordered set of channels"
                     + results.size(), results.size() == 20);
         } catch (Exception e) {
@@ -166,7 +155,6 @@ public class CFAdvanceQueryIT {
      */
     @AfterClass
     public static void cleanupDB() {
-        PopulateExampleDb.cleanupDB();
         client.destroy();
     }
 }

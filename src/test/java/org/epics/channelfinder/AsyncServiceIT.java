@@ -43,7 +43,7 @@ public class AsyncServiceIT {
         List<Integer> tokens = Arrays.asList(1,2,5,10,20,50,100,500); 
 
         int queryCount = 1000;
-        final ExecutorService scheduler = Executors.newScheduledThreadPool(50);
+        final ExecutorService scheduler = Executors.newScheduledThreadPool(100);
         List<Future<Boolean>> futures = new ArrayList<>();
         long start = System.currentTimeMillis();
         for (int i = 0; i < queryCount; i++) {
