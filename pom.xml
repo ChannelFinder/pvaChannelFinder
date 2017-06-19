@@ -97,6 +97,10 @@
         <configuration>
           <encoding>UTF-8</encoding>
           <skipITs>${skipITests}</skipITs>
+          <excludes>
+            <exclude>**/CFAdvanceQueryIT.java</exclude>
+            <exclude>**/AsyncServiceIT.java</exclude>
+          </excludes>
         </configuration>
         <executions>
           <execution>

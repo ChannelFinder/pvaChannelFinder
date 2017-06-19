@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.epics.channelfinder.example.PopulateExampleDb;
 import org.epics.nt.NTURI;
 import org.epics.nt.NTURIBuilder;
 import org.epics.pvaccess.client.rpc.RPCClientImpl;

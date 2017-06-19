@@ -32,18 +32,13 @@ public class AsyncServiceIT {
 
     private static int numberOfCells = 2;
     
-    @BeforeClass
-    public static void setup() {
-        PopulateExampleDb.createDB(numberOfCells);
-    }
-
     @Test
     public void parallelTest() {
 
         List<Integer> tokens = Arrays.asList(1,2,5,10,20,50,100,500); 
 
         int queryCount = 1000;
-        final ExecutorService scheduler = Executors.newScheduledThreadPool(100);
+        final ExecutorService scheduler = Executors.newScheduledThreadPool(50);
         List<Future<Boolean>> futures = new ArrayList<>();
         long start = System.currentTimeMillis();
         for (int i = 0; i < queryCount; i++) {
@@ -110,10 +105,4 @@ public class AsyncServiceIT {
         assertTrue("Failed to complete all Async queries reliably", failCounter<=0);
     }
     
-    @AfterClass
-    public static void cleanup(){
-        // Remove all the channels, tags, and properties created for testing.
-        PopulateExampleDb.cleanupDB();
-    }
-
 }
