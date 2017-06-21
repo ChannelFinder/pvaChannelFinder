@@ -17,8 +17,10 @@ The service returns the result as an NTTable pvStructure.
 ```_name``` Seach for channels with names matching the search pattern  
 ```_tag```  Search for channels with tags matching the pattern   
 ```<propertyName> <propertyValue>``` Search for channels with property ```<propertyName>``` with value matching the pattern ```<propertyValue>```    
+
 ```_size``` The number of results that should be returned  
 ```_from``` The number of initial results that should be skipped  
+```_filter``` A list of properties and tags to be returned
 
 
 #### Example query:  
