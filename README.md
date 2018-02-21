@@ -36,6 +36,12 @@ epics:nt/NTURI:1.0
 Installation
 ------------
 
+#### requirements  
+elasticsearch 1.5.X  
+jdk 8 or above  
+
+#### build  
+
 ``` mvn clean install ```
 
 #### Running the Service
