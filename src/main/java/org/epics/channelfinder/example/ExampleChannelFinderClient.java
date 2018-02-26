@@ -1,7 +1,6 @@
 package org.epics.channelfinder.example;
 
 import java.util.Collection;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.epics.channelfinder.ChannelFinderService;
 import org.epics.channelfinder.XmlChannel;
@@ -18,7 +17,7 @@ public class ExampleChannelFinderClient {
         // Setup for creating some test data
         PopulateExampleDb.createDB(1);
 
-        RPCClientImpl client = new RPCClientImpl(ChannelFinderService.SERVICE_NAME);
+        RPCClientImpl client = new RPCClientImpl(ChannelFinderService.SERVICE_DESC);
 
         try {
             String name_search_pattern = "SR*C001*";
@@ -30,14 +29,14 @@ public class ExampleChannelFinderClient {
              *  
              *  epics:nt/NTURI:1.0
              *      string scheme pva
-             *      string path channels
+             *      string path cfService:query
              *      structure query
              *          string _name SR*C001*
              */
 
             uri = NTURI.createBuilder().addQueryString("_name").create();
             uri.getPVStructure().getStringField("scheme").put("pva");
-            uri.getPVStructure().getStringField("path").put("channels");
+			uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
             uri.getQuery().getStringField("_name").put(name_search_pattern);
             PVStructure result = client.request(uri.getPVStructure(), 3.0);
             Collection<XmlChannel> channels = XmlUtil.parse(result);
@@ -46,13 +45,13 @@ public class ExampleChannelFinderClient {
              *
              * epics:nt/NTURI:1.0
              *     string scheme pva
-             *     string path channels
+             *     string path cfService:query
              *     structure query
              *         string group1 10|2
              */
             uri = NTURI.createBuilder().addQueryString(propName).create();
             uri.getPVStructure().getStringField("scheme").put("pva");
-            uri.getPVStructure().getStringField("path").put("channels");
+            uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
             uri.getQuery().getStringField(propName).put("10|2");
             result = client.request(uri.getPVStructure(), 3.0);
             channels = XmlUtil.parse(result);
@@ -61,13 +60,13 @@ public class ExampleChannelFinderClient {
              * 
              *  epics:nt/NTURI:1.0
              *      string scheme pva
-             *      string path channels
+             *      string path cfService:query
              *      structure query
              *          string _tag group8_50
             **/
             uri = NTURI.createBuilder().addQueryString("_tag").create();
             uri.getPVStructure().getStringField("scheme").put("pva");
-            uri.getPVStructure().getStringField("path").put("channels");
+            uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
             uri.getQuery().getStringField("_tag").put("group8_50");
             result = client.request(uri.getPVStructure(), 3.0);
             channels = XmlUtil.parse(result);
@@ -76,7 +75,7 @@ public class ExampleChannelFinderClient {
              * 
              *  epics:nt/NTURI:1.0
              *      string scheme pva
-             *      string path channels
+             *      string path cfService:query
              *      structure query
              *          string _name SR*C001*
              *          string _tag group8_50
@@ -84,7 +83,7 @@ public class ExampleChannelFinderClient {
             **/
             uri = NTURI.createBuilder().addQueryString("_name").addQueryString("_tag").addQueryString(propName).create();
             uri.getPVStructure().getStringField("scheme").put("pva");
-            uri.getPVStructure().getStringField("path").put("channels");
+            uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
 
             uri.getQuery().getStringField("_name").put(name_search_pattern);
             uri.getQuery().getStringField("_tag").put("group8_50");

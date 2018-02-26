@@ -27,7 +27,7 @@ public class CFAdvanceQueryIT {
 
     @BeforeClass
     public static void createDB() {
-        client = new RPCClientImpl(ChannelFinderService.SERVICE_NAME);
+        client = new RPCClientImpl(ChannelFinderService.SERVICE_DESC);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class CFAdvanceQueryIT {
                 .addQueryString("_filter");
         NTURI uri = uriBuilder.create();
         uri.getPVStructure().getStringField("scheme").put("pva");
-        uri.getPVStructure().getStringField("path").put("channels");
+        uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
         uri.getQuery().getStringField("_name").put("*");
         uri.getQuery().getStringField("_size").put("10");
 
@@ -91,8 +91,8 @@ public class CFAdvanceQueryIT {
         NTURI uri = uriBuilder.create();
 
         uri.getPVStructure().getStringField("scheme").put("pva");
-        uri.getPVStructure().getStringField("path").put("channels");
-        uri.getQuery().getStringField("_name").put("*");
+        uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
+        uri.getQuery().getStringField("_name").put("SR*");
         uri.getQuery().getStringField("_size").put("10");
         uri.getQuery().getStringField("_from").put("0");
         try {
@@ -118,7 +118,7 @@ public class CFAdvanceQueryIT {
         NTURI uri = uriBuilder.create();
 
         uri.getPVStructure().getStringField("scheme").put("pva");
-        uri.getPVStructure().getStringField("path").put("channels");
+        uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
         uri.getQuery().getStringField("_name").put("*");
 
         try {
