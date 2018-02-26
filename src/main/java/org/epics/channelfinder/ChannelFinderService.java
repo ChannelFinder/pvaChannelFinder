@@ -7,9 +7,7 @@ import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
 import static org.elasticsearch.index.query.QueryBuilders.wildcardQuery;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,7 +52,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ChannelFinderService {
     private static Logger log = Logger.getLogger(ChannelFinderService.class.getCanonicalName());
 
-    public final static String SERVICE_NAME = "ChannelFinderService";
+    public final static String SERVICE_DESC = "cfService:query";
 
     public static final ObjectMapper channelMapper = new ObjectMapper()
             .addMixIn(XmlProperty.class, OnlyXmlProperty.class).addMixIn(XmlTag.class, OnlyXmlTag.class);
@@ -247,7 +245,7 @@ public class ChannelFinderService {
                     log.fine(ntTable.toString());
                     this.callback.requestDone(StatusFactory.getStatusCreate().getStatusOK(), ntTable.getPVStructure());
                 } catch (Exception e) {
-                    log.log(Level.SEVERE, "Failed to complete request " + args + " for : " + SERVICE_NAME, e);
+                    log.log(Level.SEVERE, "Failed to complete request " + args + " for : " + SERVICE_DESC, e);
                     this.callback.requestDone(StatusFactory.getStatusCreate().getStatusOK(), null);
                 } finally {
                 }
@@ -294,20 +292,20 @@ public class ChannelFinderService {
 
         // Cleanup connections and resources
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            log.info("Shutting down service " + SERVICE_NAME);
+            log.info("Shutting down service " + SERVICE_DESC);
             try {
                 ChannelFinderServiceImpl.getInstance().shutdown();
                 server.destroy();
-                log.info(SERVICE_NAME + " Shutdown complete.");
+                log.info(SERVICE_DESC + " Shutdown complete.");
             } catch (PVAException e) {
-                log.log(Level.SEVERE, "Failed to close service : " + SERVICE_NAME, e);
+                log.log(Level.SEVERE, "Failed to close service : " + SERVICE_DESC, e);
             }
         }));
 
-        log.info(SERVICE_NAME + " initializing...");
-        server.registerService(SERVICE_NAME, ChannelFinderServiceImpl.getInstance());
+        log.info(SERVICE_DESC + " initializing...");
+        server.registerService(SERVICE_DESC, ChannelFinderServiceImpl.getInstance());
         server.printInfo();
-        log.info(SERVICE_NAME + " is operational.");
+        log.info(SERVICE_DESC + " is operational.");
 
         server.run(0);
 

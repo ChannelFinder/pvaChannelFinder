@@ -85,7 +85,7 @@ public class CFBasicQueryIT {
 
     }
 
-    private RPCClientImpl client = new RPCClientImpl(ChannelFinderService.SERVICE_NAME);
+    private RPCClientImpl client = new RPCClientImpl(ChannelFinderService.SERVICE_DESC);
 
     @Test
     public void queryByName1() {
@@ -93,7 +93,7 @@ public class CFBasicQueryIT {
         uriBuilder.addQueryString("_name");
         NTURI uri = uriBuilder.create();
         uri.getPVStructure().getStringField("scheme").put("pva");
-        uri.getPVStructure().getStringField("path").put("channels");
+        uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
         uri.getQuery().getStringField("_name").put("pvk:0?<*");
 
         try {
@@ -114,7 +114,7 @@ public class CFBasicQueryIT {
         uriBuilder.addQueryString("_name");
         NTURI uri = uriBuilder.create();
         uri.getPVStructure().getStringField("scheme").put("pva");
-        uri.getPVStructure().getStringField("path").put("channels");
+        uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
         uri.getQuery().getStringField("_name").put("pvk:01<first>|pvk:02<second>");
 
         try {
@@ -136,7 +136,7 @@ public class CFBasicQueryIT {
         uriBuilder.addQueryString("_size");
         NTURI uri = uriBuilder.create();
         uri.getPVStructure().getStringField("scheme").put("pva");
-        uri.getPVStructure().getStringField("path").put("channels");
+        uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
         uri.getQuery().getStringField("_name").put("*");
 
         try {
@@ -161,7 +161,7 @@ public class CFBasicQueryIT {
         uriBuilder.addQueryString("_tag");
         NTURI uri = uriBuilder.create();
         uri.getPVStructure().getStringField("scheme").put("pva");
-        uri.getPVStructure().getStringField("path").put("channels");
+        uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
         uri.getQuery().getStringField("_tag").put("IT_Taga");
 
         try {
@@ -193,7 +193,7 @@ public class CFBasicQueryIT {
         uriBuilder.addQueryString("_tag");
         NTURI uri = uriBuilder.create();
         uri.getPVStructure().getStringField("scheme").put("pva");
-        uri.getPVStructure().getStringField("path").put("channels");
+        uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
         uri.getQuery().getStringField("_tag").put("IT_Taga|IT_Tagb");
 
         try {
@@ -215,7 +215,7 @@ public class CFBasicQueryIT {
         uriBuilder.addQueryString("_tag");
         NTURI uri = uriBuilder.create();
         uri.getPVStructure().getStringField("scheme").put("pva");
-        uri.getPVStructure().getStringField("path").put("channels");
+        uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
         uri.getQuery().getStringField("_tag").put("IT_Taga&IT_Tagb");
 
         try {
@@ -235,7 +235,7 @@ public class CFBasicQueryIT {
         uriBuilder.addQueryString("IT_prop");
         NTURI uri = uriBuilder.create();
         uri.getPVStructure().getStringField("scheme").put("pva");
-        uri.getPVStructure().getStringField("path").put("channels");
+        uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
         uri.getQuery().getStringField("IT_prop").put("2");
 
         try {
@@ -255,7 +255,7 @@ public class CFBasicQueryIT {
         uriBuilder.addQueryString("IT_prop");
         NTURI uri = uriBuilder.create();
         uri.getPVStructure().getStringField("scheme").put("pva");
-        uri.getPVStructure().getStringField("path").put("channels");
+        uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
 
         try {
             uri.getQuery().getStringField("IT_prop").put("1|2");
@@ -283,7 +283,7 @@ public class CFBasicQueryIT {
         uriBuilder.addQueryString("IT_prop2");
         NTURI uri = uriBuilder.create();
         uri.getPVStructure().getStringField("scheme").put("pva");
-        uri.getPVStructure().getStringField("path").put("channels");
+        uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
         uri.getQuery().getStringField("IT_prop").put("1");
         uri.getQuery().getStringField("IT_prop2").put("2");
 

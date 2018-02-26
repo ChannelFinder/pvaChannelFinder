@@ -14,14 +14,11 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.epics.channelfinder.example.PopulateExampleDb;
 import org.epics.nt.NTURI;
 import org.epics.nt.NTURIBuilder;
 import org.epics.pvaccess.client.rpc.RPCClientImpl;
 import org.epics.pvaccess.server.rpc.RPCRequestException;
 import org.epics.pvdata.pv.PVStructure;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -44,7 +41,7 @@ public class AsyncServiceIT {
         for (int i = 0; i < queryCount; i++) {
             futures.add(scheduler.submit(() -> {
 
-                RPCClientImpl client = new RPCClientImpl(ChannelFinderService.SERVICE_NAME);
+                RPCClientImpl client = new RPCClientImpl(ChannelFinderService.SERVICE_DESC);
                 try {
                     String name_search_pattern = "SR*C"+String.format("%03d", ThreadLocalRandom.current().nextInt(1, numberOfCells))+"*";
                     String propName = "group" + ThreadLocalRandom.current().nextInt(9);
@@ -55,7 +52,7 @@ public class AsyncServiceIT {
                     NTURI uri = uriBuilder.create();
 
                     uri.getPVStructure().getStringField("scheme").put("pva");
-                    uri.getPVStructure().getStringField("path").put("channels");
+                    uri.getPVStructure().getStringField("path").put(ChannelFinderService.SERVICE_DESC);
                     uri.getQuery().getStringField("_name").put(name_search_pattern);
                     uri.getQuery().getStringField(propName).put(String.valueOf(propValue));
 
