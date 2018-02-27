@@ -37,8 +37,10 @@ Installation
 ------------
 
 #### requirements   
-jdk 8 or above  
-elasticsearch 1.5.X 
+
+ **jdk 8 or above**
+
+ **elasticsearch 1.5.X**
 
 Create the elastic indexes and set up their mapping
 
