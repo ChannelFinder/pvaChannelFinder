@@ -44,7 +44,7 @@ Installation
 
 Create the elastic indexes and set up their mapping
 
-  * The Mapping_definitions script (which is avaiable under /channelfinder/src/main/resources) contains the curl commands to setup the 3 elastic indexes associated with channelfinder.  
+  * The Mapping_definitions script (which is avaiable under /pvaChannelFinder/src/main/resources) contains the curl commands to setup the 3 elastic indexes associated with channelfinder.  
   * Enable scripting in elastic by adding the following lines to the elasticsearch.yml (on linux /etc/elasticsearch/elasticsearch.yml)
   ```
   ################################# Scripting ###############################
